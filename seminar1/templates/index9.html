@@ -1,0 +1,28 @@
+{% extends 'base-internet.html' %}
+
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+  <p class="h2">
+    {{ greetings }}
+  </p>
+</div>
+<div class="row">
+  {% for item in cards %}
+  <div class="col-4">
+    <div class="card">
+      <img src="{{ item.card_img }}" class="card-img-top" alt="...">
+
+      <div class="card-body">
+        <h5 class="card-title">{{ item.card_title }}</h5>
+        <p class="card-text">{{ item.card_text }}</p>
+        <a href="#" class="btn btn-primary">{{ item.card_btn_name }}</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

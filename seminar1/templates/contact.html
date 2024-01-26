@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ super() }} - {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h3 class="col-12 text-center">
+        {{ contents.description }}
+    </h3>
+    {% for item in contents.contacts %}
+        <div class="col-12 col-md-6 col-lg-4">
+            {% for key, value in item.items() %}
+                <p>
+                    {{ key }} : {{ value }}
+                </p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

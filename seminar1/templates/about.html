@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ super() }} - {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h3 class="col-12 text-left">
+        {{ contents.name }}
+    </h3>
+    {% for item in contents.students %}
+        <div class="col-12 col-md-6 col-lg-4">
+            {{ item }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
