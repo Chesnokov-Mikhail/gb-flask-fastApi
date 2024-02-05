@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "seminar4"
+version = "0.1.0"
+description = ""
+authors = ["Chesnokov M.A. <chesnokov_ma@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.9.3"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
