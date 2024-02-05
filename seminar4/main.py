@@ -35,11 +35,10 @@ async def iodownload(url):
                 f.write(content)
                 print(f'Downloaded {url} in {time.time() - start_time:.2f}seconds')
 
-
 async def main(urls):
     tasks = []
     for url in urls:
-        task = asyncio.ensure_future(download(url))
+        task = asyncio.ensure_future(iodownload(url))
         tasks.append(task)
     await asyncio.gather(*tasks)
 
