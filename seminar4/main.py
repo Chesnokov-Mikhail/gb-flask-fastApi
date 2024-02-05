@@ -1,7 +1,7 @@
 import threading
 from multiprocessing import Process, Pool
 import asyncio
-# import aiohttp
+import aiohttp
 import requests
 from pathlib import Path
 import argparse
@@ -24,6 +24,25 @@ def download(url):
         f.write(response.content)
         print(f'Downloaded {url} in {time.time()-start_time:.2f}seconds')
 
+
+async def iodownload(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            content = await response.content
+            filename = Path(url).name
+            print(f'Имя файла {filename}')
+            with open(filename, 'wb') as f:
+                f.write(content)
+                print(f'Downloaded {url} in {time.time() - start_time:.2f}seconds')
+
+
+async def main(urls):
+    tasks = []
+    for url in urls:
+        task = asyncio.ensure_future(download(url))
+        tasks.append(task)
+    await asyncio.gather(*tasks)
+
 threads = []
 processes = []
 start_time = time.time()
@@ -40,10 +59,19 @@ if __name__ == '__main__':
     #     thread.start()
     # for thread in threads:
     #     thread.join()
+    # print(f'Total downloadeds {urls} in {time.time()-start_time:.2f}seconds')
+
     # Mногопроцессорный подход
-    for url in urls:
-        process = Process(target=download, args=(url,))
-        processes.append(process)
-        process.start()
-    for process in processes:
-        process.join()
+    # for url in urls:
+    #     process = Process(target=download, args=(url,))
+    #     processes.append(process)
+    #     process.start()
+    # for process in processes:
+    #     process.join()
+    # print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
+
+    # Асинхронный подход
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(urls))
+    print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
+
