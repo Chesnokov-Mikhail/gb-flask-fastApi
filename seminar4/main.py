@@ -1,7 +1,7 @@
 import threading
-from multiprocessing import Process, Pool
-import asyncio
+from multiprocessing import Process
 import aiohttp
+import asyncio
 import requests
 from pathlib import Path
 import argparse
@@ -28,12 +28,13 @@ def download(url):
 async def iodownload(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            content = await response.content
+            content = await response.read()
             filename = Path(url).name
             print(f'Имя файла {filename}')
             with open(filename, 'wb') as f:
                 f.write(content)
                 print(f'Downloaded {url} in {time.time() - start_time:.2f}seconds')
+
 
 async def main(urls):
     tasks = []
@@ -48,29 +49,34 @@ start_time = time.time()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Argument parser')
+    parser.add_argument('metod', metavar='metod', type=str, nargs=1, help='Enter metod download [thread, process, async]')
     parser.add_argument('urls', metavar='urls', type=str, nargs='*', help='Enter urls image download')
     args = parser.parse_args()
+    metod = args.metod[0]
     urls = args.urls
-    # Многопоточный подход
-    # for url in urls:
-    #     thread = threading.Thread(target=download, args=(url,))
-    #     threads.append(thread)
-    #     thread.start()
-    # for thread in threads:
-    #     thread.join()
-    # print(f'Total downloadeds {urls} in {time.time()-start_time:.2f}seconds')
-
-    # Mногопроцессорный подход
-    # for url in urls:
-    #     process = Process(target=download, args=(url,))
-    #     processes.append(process)
-    #     process.start()
-    # for process in processes:
-    #     process.join()
-    # print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
-
-    # Асинхронный подход
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(urls))
-    print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
+    if metod == 'thread':
+        # Многопоточный подход
+        for url in urls:
+            thread = threading.Thread(target=download, args=(url,))
+            threads.append(thread)
+            thread.start()
+        for thread in threads:
+            thread.join()
+        print(f'Total downloadeds {urls} in {time.time()-start_time:.2f}seconds')
+    elif metod == 'process':
+        # Mногопроцессорный подход
+        for url in urls:
+            process = Process(target=download, args=(url,))
+            processes.append(process)
+            process.start()
+        for process in processes:
+            process.join()
+        print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
+    elif metod == 'async':
+        # Асинхронный подход
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main(urls))
+        print(f'Total downloadeds {urls} in {time.time() - start_time:.2f}seconds')
+    else:
+        print('Укажите корректный метод скачивания изображений')
 
