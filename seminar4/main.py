@@ -1,5 +1,5 @@
 import threading
-import multiprocessing
+from multiprocessing import Process, Pool
 import asyncio
 # import aiohttp
 import requests
@@ -16,7 +16,6 @@ import time
 # — Программа должна выводить в консоль информацию о времени скачивания каждого изображения и общем
 # времени выполнения программы.
 
-# Многопоточность
 def download(url):
     response = requests.get(url)
     filename = Path(url).name
@@ -26,17 +25,25 @@ def download(url):
         print(f'Downloaded {url} in {time.time()-start_time:.2f}seconds')
 
 threads = []
+processes = []
 start_time = time.time()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Argument parser')
-    parser.add_argument('urls', metavar='urls', type=str, nargs=1, help='Enter url image download')
+    parser.add_argument('urls', metavar='urls', type=str, nargs='*', help='Enter urls image download')
     args = parser.parse_args()
     urls = args.urls
-    # Многопоточность
+    # Многопоточный подход
+    # for url in urls:
+    #     thread = threading.Thread(target=download, args=(url,))
+    #     threads.append(thread)
+    #     thread.start()
+    # for thread in threads:
+    #     thread.join()
+    # Mногопроцессорный подход
     for url in urls:
-        thread = threading.Thread(target=download, args=[url])
-        threads.append(thread)
-        thread.start()
-    for thread in threads:
-        thread.join()
+        process = Process(target=download, args=(url,))
+        processes.append(process)
+        process.start()
+    for process in processes:
+        process.join()
