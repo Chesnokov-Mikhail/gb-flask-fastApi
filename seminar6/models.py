@@ -1,8 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime, Enum
-from sqlalchemy.orm import relationship
 from datetime import datetime
+import sqlalchemy
 import enum
-from database import Base
+from database import metadata
 
 
 class Status(enum.Enum):
@@ -12,35 +11,31 @@ class Status(enum.Enum):
     closed: int = 3
 
 
-class User(Base):
-    __tablename__ = "users"
+users = sqlalchemy.Table(
+    "users",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("lastname", sqlalchemy.String(40), nullable=False),
+    sqlalchemy.Column("firstname", sqlalchemy.String(40), nullable=False),
+    sqlalchemy.Column("email", sqlalchemy.String(100), nullable=False),
+    sqlalchemy.Column("password", sqlalchemy.String)
+)
 
-    id = Column(Integer, primary_key=True)
-    lastname = Column(String(40), nullable=False)
-    firstname = Column(String(40), nullable=False)
-    email = Column(String(100), nullable=False)
-    hashed_password = Column(String)
+products = sqlalchemy.Table(
+    "products",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("title", sqlalchemy.String(50), nullable=False),
+    sqlalchemy.Column("description", sqlalchemy.String(1000)),
+    sqlalchemy.Column("price", sqlalchemy.Float, nullable=False)
+)
 
-    orders = relationship("Order", back_populates="owner")
-
-
-class Product(Base):
-    __tablename__ = "products"
-
-    id = Column(Integer, primary_key=True)
-    title = Column(String(50), nullable=False)
-    description = Column(String(1000))
-    price = Column(Float, nullable=False)
-
-
-class Order(Base):
-    __tablename__ = "orders"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    status = Column(Enum(Status), nullable=False)
-
-    owner = relationship("User", back_populates="orders")
-    product = relationship("Product", back_populates="orders")
+products = sqlalchemy.Table(
+    "orders",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("user_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id")),
+    sqlalchemy.Column("product_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("products.id")),
+    sqlalchemy.Column("created_at", sqlalchemy.DateTime, default=datetime.utcnow),
+    sqlalchemy.Column("status", sqlalchemy.Enum(Status), nullable=False),
+)
