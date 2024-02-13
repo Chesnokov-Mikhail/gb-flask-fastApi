@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "seminar6"
+version = "0.1.0"
+description = ""
+authors = ["Chesnokov M.A. <chesnokov_ma@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.109.2"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.27"}
+uvicorn = {extras = ["standard"], version = "^0.27.1"}
+aiosqlite = "^0.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
