@@ -34,7 +34,7 @@ async def get_users():
     raise HTTPException(status_code=404, detail="Users not found")
 
 @app.post("/users/", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
-async def get_users(user: schemas.UserCreate):
+async def post_user(user: schemas.UserCreate):
     query = models.users.insert().values(lastname=user.lastname, firstname=user.firstname, email=user.email,
                                          password=user.password)
     last_record_id = await database.execute(query)
@@ -69,7 +69,7 @@ async def get_products():
     raise HTTPException(status_code=404, detail="Products not found")
 
 @app.post("/products/", response_model=schemas.Product, status_code=status.HTTP_201_CREATED)
-async def get_users(product: schemas.ProductCreate):
+async def post_product(product: schemas.ProductCreate):
     query = models.products.insert().values(title=product.title, description=product.description, price=product.price)
     last_record_id = await database.execute(query)
     if last_record_id:
@@ -78,7 +78,7 @@ async def get_users(product: schemas.ProductCreate):
         raise HTTPException(status_code=404, detail="Product not add")
 
 @app.put("/products/{prod_id}", response_model=schemas.Product, status_code=status.HTTP_202_ACCEPTED)
-async def update_user(prod_id: int, new_prod: schemas.ProductCreate):
+async def update_product(prod_id: int, new_prod: schemas.ProductCreate):
     query = models.products.update().where(models.products.c.id == prod_id).values(**new_prod.dict())
     result = await database.execute(query)
     if result:
