@@ -30,7 +30,7 @@ products = sqlalchemy.Table(
     sqlalchemy.Column("price", sqlalchemy.Float, nullable=False)
 )
 
-products = sqlalchemy.Table(
+orders = sqlalchemy.Table(
     "orders",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),

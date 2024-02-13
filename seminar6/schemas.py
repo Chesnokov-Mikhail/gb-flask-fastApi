@@ -27,9 +27,9 @@ class User(UserBase):
     id: int
 
 class ProductBase(BaseModel):
-    title: str = Field(title="Email", max_length=50)
-    description: str = Field(title="Email", max_length=1000, default="")
-    price: float = Field(0, title="Price", ge=0, le=10)
+    title: str = Field(title="Title", max_length=50)
+    description: str = Field(title="Description", max_length=1000, default="")
+    price: float = Field(0, title="Price", ge=0)
 
 
 class ProductCreate(ProductBase):
